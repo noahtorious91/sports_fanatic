@@ -4,15 +4,27 @@
 <head>
     <meta charset="UTF-8">
     <title>Products</title>
-    <link rel="stylesheet" href="{% static 'store/main.css' %}">
+    <link rel="stylesheet" href="{% static 'store/product_list.css' %}">
     
 </head>
 <body>
     <h1>Products</h1>
-    <ul>
+    <div class="products">
         {% for product in products %}
-            <li>{{ product.name }} - ${{ product.price }}</li>
+            <div class="product-card">
+                {% if product.image %}
+                    <img src="{{ product.image.url}}" alt="{{ product.name}}">
+                {% else %}
+                    <img src="{% static 'store/default-product.png' %}" alt="Default Product">
+                {% endif %}
+                <h3>{{ product.name }}</h3>
+                <p>Price: ${{ product.price }}</p>
+                {% if product.stock %}
+                    <p>In Stock: {{ product.stock }}</p>
+                    <a href="{% url 'add_to_cart' product.id %}" class="add-to-cart-btn">Add to Cart</a>
+                {% else %}
+                    <p style="color: red;">Out of Stock</p>
+                {% endif %}
+            </div>
         {% endfor %}
-    </ul>
-</body>
-</html>
+    </div>
