@@ -1,19 +1,19 @@
+{% extends 'store/base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Products</title>
+
+{% block styles %}
     <link rel="stylesheet" href="{% static 'store/product_list.css' %}">
-    
-</head>
-<body>
+{% endblock %}
+
+{% block title %}Products - MyShop{% endblock %}
+
+{% block content %}
     <h1>Products</h1>
     <div class="products">
         {% for product in products %}
             <div class="product-card">
                 {% if product.image %}
-                    <img src="{{ product.image.url}}" alt="{{ product.name}}">
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
                 {% else %}
                     <img src="{% static 'store/default-product.png' %}" alt="Default Product">
                 {% endif %}
@@ -28,3 +28,4 @@
             </div>
         {% endfor %}
     </div>
+{% endblock %}
