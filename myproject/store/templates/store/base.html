@@ -1,0 +1,35 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang ="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}MyShop{% endblock %}</title>
+    {% block styles %}{% endblock %}
+    <link rel="stylesheet" href="{% static 'store/base.css' %}">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <h1>MyShop</h1>
+        </div>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="{% url 'product_list' %}">Products</a></li>
+                <li><a href="{% url 'cart' %}">Cart</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        {% block content %}
+        <!--page specific content goes here-->
+        {% endblock %}
+    </main>
+    <footer class="site-footer">
+        <p>&copy; 2025 Sports Fanatic. All rights reserved.</p>
+    </footer>
+
+        </nav>
+    </header>
+</body>
+</html>

@@ -1,12 +1,13 @@
+{% extends 'store/base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Home - MyShop</title>
+
+{% block styles %}
     <link rel="stylesheet" href="{% static 'store/home.css' %}">
-</head>
-<body>
+{% endblock %}
+
+{% block title %}Products - MyShop{% endblock %}
+
+{% block content %}
     <h1>Welcome to MyShop 🛒</h1>
     <div class="products">
         {% for product in random_products %}
@@ -38,5 +39,4 @@
             // You can replace this alert with an AJAX request to add the product to the cart
         }
     </script>
-</body>
-</html>
+{% endblock %}
