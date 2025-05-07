@@ -81,5 +81,6 @@ class CustomUserCreationForm(UserCreationForm):
 
         }
 
-
+def purchase(request):
+    return render(request, 'store/purchase.html')
     
