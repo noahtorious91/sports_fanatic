@@ -16,5 +16,6 @@ urlpatterns = [
     path('remove_from_cart/<int:product_id>/', views.remove_from_cart, name='remove_from_cart'),
     path('signup/', views.signup, name='signup'),
     path('login/', auth_views.LoginView.as_view(), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(), name='logout')
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('purchase/', views.purchase, name='purchase'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)  # Append the list correctly
