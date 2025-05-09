@@ -4,6 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate
+from django.contrib import messages
 import random
 
 # Query all products from the database - used on the product list page
@@ -84,3 +85,14 @@ class CustomUserCreationForm(UserCreationForm):
 def purchase(request):
     return render(request, 'store/purchase.html')
     
+def login_view(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('product_list')
+        else:
+            messages.error(request, 'Invalid username or password')
+    return render(request, 'store/login.html')
