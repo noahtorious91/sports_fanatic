@@ -3,19 +3,19 @@ This is an e-commerce website to generate data for batch and streaming archtectu
 
 Initially I will be developing to use this webapp to use with the following lakehouse system for local and cloud development via containers:
 
-                                Orchestration (Airflow)
-                                    |
-                                    ↓
-  Django <->  [PostgreSQL] --(Airbyte)-->   [MinIO (Raw) - Iceberg + Parquet]
-                ↘                           ↓
-                   Streaming(kafka)   ->     Data Warehouse (Clickhouse)
-                                            |
-                                            ↓
-                                            Transform (dbt for batch)  
-                                            |
-                                            ↓
-                                            BI tool (Superset)
+```text
+Orchestration (Airflow)
+        |
+        ↓
+Django <-> [PostgreSQL] --(Airbyte)--> [MinIO - Iceberg + Parquet]
+                ↘                          ↓
+                   Streaming (Kafka) → Data Warehouse (ClickHouse)
+                                           ↓
+                                       Transform (dbt for batch)
+                                           ↓
+                                       BI Tool (Superset)
 
+```
 
 The local resource usage of the docker containers will be as follows:
 
@@ -31,19 +31,18 @@ Docker will use 14GBs and 7Cores if you are reading this and want to use this we
 
 -----------------------------------------------------------------------------
 
-Current Roadmap:
-
-[] home page products and cart logic
-[x] login feature
-[] product detail pages feature
-[] account feature
-[] invoices / orders feature
-[] logout feature 
-[] product catalog tool 
-[] promo manager tool 
-[] returns tool 
-[] product tagging enhancement
-[] inventory management tool
-[] tag specific plps
-[] filters on plps
-[] reviews tool
+## Current Roadmap:
+- [ ] home page products and cart logic
+- [x] login feature
+- [ ] product detail pages feature
+- [ ] account feature
+- [ ] invoices / orders feature
+- [ ] logout feature 
+- [ ] product catalog tool 
+- [ ] promo manager tool 
+- [ ] returns tool 
+- [ ] product tagging enhancement
+- [ ] inventory management tool
+- [ ] tag specific plps
+- [ ] filters on plps
+- [ ] reviews tool
