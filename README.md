@@ -15,7 +15,8 @@ Initially I will be developing to use this webapp to use with the following lake
                                             |
                                             ↓
                                             BI tool (Superset)
------------------------------------------------------------------------------
+
+
 The local resource usage of the docker containers will be as follows:
 
 1) Django webserver - 2GB/ 1Core
