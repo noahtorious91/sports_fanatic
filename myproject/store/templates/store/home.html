@@ -12,22 +12,25 @@
     <div class="products">
         {% for product in random_products %}
             <div class="product">
+                {% if product.image %}
+                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                {% else %}
+                <img src="{% static 'store/default-product.png' %}" alt="Default Product">
+                {% endif %}
                 <h3>{{ product.name }}</h3>
                 <p>Price: ${{ product.price }}</p>
                 {% if product.stock %}
                     <p>In Stock: {{ product.stock }}</p>
                     <!-- Add to Cart button if stock is available -->
-                    <button onclick="addToCart('{{ product.id }}')">Add to Cart</button>
+                    <form action="{% url 'add_to_cart' product.id %}" method=post>
+                        {% csrf_token %}
+                        <button type="submit" class="add-to-cart-btn">Add to Cart</button>
+                    </form>
                 {% else %}
                     <p style="color: red;">Out of Stock</p>
                 {% endif %}
                 {% if product.description %}
                     <p>Description: {{ product.description }}</p>
-                {% endif %}
-                {% if product.image %}
-                    <img src="{{ product.image.url }}" alt="{{ product.name }}">
-                {% else %}
-                    <img src="{% static 'store/default-product.png' %}" alt="Default Product">
                 {% endif %}
             </div>
         {% endfor %}
