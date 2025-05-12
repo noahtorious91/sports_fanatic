@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth import login, authenticate
 from django.contrib import messages
 from decimal import Decimal
+from django.contrib.auth.decorators import login_required
 from .models import Transaction, LineItem, Product
 import random
 
@@ -189,3 +190,8 @@ def login_view(request):
         else:
             messages.error(request, 'Invalid username or password')
     return render(request, 'store/login.html')
+
+@login_required
+def account_view(request):
+    transactions = Transaction.objects.filter(user=request.user).order_by('-created_at')
+    return render(request, 'store/account.html', {'transactions': transactions})
