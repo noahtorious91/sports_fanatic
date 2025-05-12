@@ -19,4 +19,5 @@ urlpatterns = [
     path('login/', views.login_view, name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
     path('purchase/', views.purchase, name='purchase'),
+    path('account/', views.account_view, name='account'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)  # Append the list correctly
