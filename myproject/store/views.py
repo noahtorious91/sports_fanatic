@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Product
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
@@ -195,3 +195,9 @@ def login_view(request):
 def account_view(request):
     transactions = Transaction.objects.filter(user=request.user).order_by('-created_at')
     return render(request, 'store/account.html', {'transactions': transactions})
+
+@login_required
+def invoice_detail(request, transaction_id):
+    transaction = get_object_or_404(Transaction, id=transaction_id, user=request.user)
+    line_items = LineItem.objects.filter(transaction=transaction)
+    return render(request, 'store/invoice.html', {'transaction': transaction, 'line_items': line_items})
