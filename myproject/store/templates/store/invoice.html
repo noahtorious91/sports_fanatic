@@ -1,0 +1,41 @@
+{% extends 'store/base.html' %}
+
+{% block title %} Invoice - {{ invoice.id }}{% endblock %}
+
+{% block content %}
+
+<h1>Invoice {{ transaction.id }} </h1>
+<p><strong>Date:</strong> {{ transaction.created_at}}</p>
+<p><strong>Subtotal:</strong> {{ transaction.subtotal}}</p>
+<p><strong>Taxes:</strong> {{ transaction.taxes }}</p>
+<p><strong>Total:</strong> {{ transaction.total }}</p>
+
+<h2>Line Items</h2>
+{% if line_items %}
+    <table>
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Taxes</th>
+                <th>Total Price</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in line_items %}
+                <tr>
+                    <td>{{ item.product_name }}</td>
+                    <td>{{ item.price  }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.taxes }}</td>
+                    <td>{{ item.total_price }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>No line items found for this invoice.</p>
+{% endif %}
+<a href="{% url 'account' %}">Back to Account</a>
+{% endblock %}
