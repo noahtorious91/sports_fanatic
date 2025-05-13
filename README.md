@@ -35,8 +35,8 @@ Docker will use 14GBs and 7Cores if you are reading this and want to use this we
 - [x] home page products and cart logic
 - [x] login feature
 - [ ] product detail pages feature
-- [ ] account feature
-- [ ] invoices / orders feature
+- [x] account feature
+- [x] invoices / orders feature
 - [x] logout feature 
 - [ ] product catalog tool 
 - [ ] promo manager tool 
