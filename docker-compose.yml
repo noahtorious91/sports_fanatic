@@ -6,7 +6,7 @@ services:
     volumes:
       - ./myproject:/myproject
     working_dir: /myproject
-    command: python manage.py runserver 0.0.0.0:8080
+    command: python manage.py runserver 0.0.0.0:8000
     ports:
       - "8080:8000"
     depends_on:
