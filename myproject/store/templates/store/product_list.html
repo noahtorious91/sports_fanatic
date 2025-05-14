@@ -18,6 +18,7 @@
                     <img src="{% static 'store/default-product.png' %}" alt="Default Product">
                 {% endif %}
                 <h3>{{ product.name }}</h3>
+                <a href="{% url 'product_detail' product.id %}">View Details</a>
                 <p>Price: ${{ product.price }}</p>
                 {% if product.stock %}
                     <p>In Stock: {{ product.stock }}</p>
