@@ -1,4 +1,9 @@
 {% extends 'store/base.html' %}
+{% load static %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'store/product_detail.css' %}">
+{% endblock %}
 
 {% block title %}{{product.name}}{% endblock %}
 
