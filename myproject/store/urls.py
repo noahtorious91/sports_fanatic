@@ -21,5 +21,6 @@ urlpatterns = [
     path('purchase/', views.purchase, name='purchase'),
     path('account/', views.account_view, name='account'),
     path('invoice/<int:transaction_id>/', views.invoice_detail, name='invoice_detail'),
-    path('product/<int:product_id>/', views.product_detail, name='product_detail')
+    path('product/<int:product_id>/', views.product_detail, name='product_detail'),
+    path('internal-tools/', views.internal_tools, name='internal_tools')
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)  # Append the list correctly

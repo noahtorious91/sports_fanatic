@@ -17,13 +17,20 @@
                 <li><a href="{% url 'home' %}">Home</a></li>
                 <li><a href="{% url 'product_list' %}">Products</a></li>
                 {% if user.is_authenticated %}
-                <li><a href="{% url 'account' %}">Account</a></li>
+                    <li><a href="{% url 'account' %}">Account</a></li>
+                    <li class="dropdown">
+                        <a href="#">Tools ▼</a>
+                        <ul class="dropdown-menu">
+                            <li><a href="{% url 'internal_tools' %}">Internal Tools</a></li>
+                            <!-- Add more dropdown links here -->
+                        </ul>
+                    </li>
                     <form action="{% url 'logout' %}" method="post" style="display:inline">
                         {% csrf_token %}
                         <button type="submit" class="logout-btn">Logout</button>
                     </form>
                 {% else %}
-                    <li><a href="{% url 'signup' %}">Signup</a> / <a href="{% url 'login' %}">Login</a></li> 
+                    <li><a href="{% url 'signup' %}">Signup</a> / <a href="{% url 'login' %}">Login</a></li>
                 {% endif %}
                 <li><a href="{% url 'cart' %}">Cart</a></li>
             </ul>
