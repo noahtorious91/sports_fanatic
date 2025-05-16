@@ -202,6 +202,10 @@ def invoice_detail(request, transaction_id):
     line_items = LineItem.objects.filter(transaction=transaction)
     return render(request, 'store/invoice.html', {'transaction': transaction, 'line_items': line_items})
 
+@login_required
+def internal_tools(request):
+    return render(request, 'store/internal_tools.html')
+
 def product_detail(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     return render(request, 'store/product_detail.html', {'product': product})
