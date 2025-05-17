@@ -34,7 +34,7 @@ Docker will use 14GBs and 7Cores if you are reading this and want to use this we
 ## Current Roadmap:
 - [x] home page products and cart logic
 - [x] login feature
-- [ ] product detail pages feature
+- [x] product detail pages feature
 - [x] account feature
 - [x] invoices / orders feature
 - [x] logout feature 
