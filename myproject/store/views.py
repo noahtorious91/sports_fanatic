@@ -8,6 +8,7 @@ from django.contrib import messages
 from decimal import Decimal
 from django.contrib.auth.decorators import login_required
 from .models import Transaction, LineItem, Product
+from .forms import ProductForm
 import random
 
 # Query all products from the database - used on the product list page
@@ -152,10 +153,11 @@ def purchase(request):
         taxes=round(taxes, 2),
     )
 
-    # Create line items for each product in the cart
+# Create line items for each product in the cart
     for product_id, quantity in cart.items():
         product = Product.objects.get(id=product_id)
-        line_item_taxes = product.price * quantity * tax_rate  # Calculate taxes for this line item
+# Calculate taxes for this line item
+        line_item_taxes = product.price * quantity * tax_rate  
         LineItem.objects.create(
             transaction=transaction,
             product_id=product,
@@ -163,14 +165,15 @@ def purchase(request):
             price=product.price,
             total_price=product.price * quantity,
             quantity=quantity,
-            taxes=round(line_item_taxes, 2),  # Add taxes for the line item
+# Add taxes for the line item
+            taxes=round(line_item_taxes, 2),  
         )
 
-    # Clear the cart
+# Clear the cart
     request.session['cart'] = {}
     messages.success(request, 'Purchase successful!')
 
-    # Pass data to the template
+# Pass data to the template
     context = {
         'cart_items': cart_items,
         'subtotal': round(subtotal, 2),
@@ -209,3 +212,32 @@ def internal_tools(request):
 def product_detail(request, product_id):
     product = get_object_or_404(Product, id=product_id)
     return render(request, 'store/product_detail.html', {'product': product})
+
+@login_required
+def catalog_tool(request):
+    products = Product.objects.all()
+    return render(request, 'store/catalog_tool.html', {'products': products})
+
+@login_required
+def add_product(request):
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Product added successfully!')
+            return redirect('catalog_tool')
+        else:
+            form = ProductForm()
+        return render(request, 'store/add_product.html', {'form': form})
+    
+@login_required
+def edit_product(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    if request.method == 'POST':
+        form = ProductForm(request.POST, request.FILES, instance=product)
+        if form.is_valid():
+            form.save()
+            return redirect('catalog_tool')
+    else:
+        form = ProductForm(instance=product)
+    return render(request, 'store/edit_product.html', {'form': form, 'product': product})
