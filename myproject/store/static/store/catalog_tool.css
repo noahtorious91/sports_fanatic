@@ -1,0 +1,66 @@
+.catalog-tool-container {
+    max-width: 1200 px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.catalog-tool-container h1 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.catalog-tool-container .btn {
+    display: inline-block;
+    padding: 10px 20px;
+    margin: 10px 0;
+    background-color: #007bff;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    margin-bottom: 20px;
+}
+
+.catalog-tool-container .btn:hover {
+    background-color: #0056b3;
+}
+
+.catalog-tool-container table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.catalog-tool-container table th,
+.catalog-tool-container table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.catalog-tool-container table th {
+    background-color: #f0f0f0;
+    font-weight: bold;
+}
+
+.catalog-tool-container table tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+.catalog-tool-container table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.catalog-tool-container table a {
+    color: #007bff;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.catalog-tool-container tavle a:hover {
+    color: #0056b3;
+}

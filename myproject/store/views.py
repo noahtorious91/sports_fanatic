@@ -226,9 +226,9 @@ def add_product(request):
             form.save()
             messages.success(request, 'Product added successfully!')
             return redirect('catalog_tool')
-        else:
-            form = ProductForm()
-        return render(request, 'store/add_product.html', {'form': form})
+    else:
+        form = ProductForm()  # Handle GET request by rendering an empty form
+    return render(request, 'store/add_product.html', {'form': form})
     
 @login_required
 def edit_product(request, product_id):
