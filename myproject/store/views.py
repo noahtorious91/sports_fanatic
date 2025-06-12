@@ -9,6 +9,7 @@ from decimal import Decimal
 from django.contrib.auth.decorators import login_required
 from .models import Transaction, LineItem, Product
 from .forms import ProductForm
+from django.db import transaction
 import random
 
 # Query all products from the database - used on the product list page
@@ -121,67 +122,63 @@ class CustomUserCreationForm(UserCreationForm):
 
         }
 
+@login_required
 def purchase(request):
     cart = request.session.get('cart', {})
     if not cart:
-        messages.error(request, 'Your cart is empty') 
+        messages.error(request, 'Your cart is empty')
         return redirect('cart')
 
-    # Calculate subtotal, taxes, and total logic 
-    cart_items = []
-    subtotal = 0
-    for product_id, quantity in cart.items():
-        product = Product.objects.get(id=product_id)
-        total_price = product.price * quantity
-        subtotal += total_price
-        cart_items.append({
-            'product': product,
-            'quantity': quantity,
-            'price': product.price,
-            'total_price': total_price,
-        })
-
-    tax_rate = Decimal('0.10') 
-    taxes = subtotal * tax_rate
-    total = subtotal + taxes
-
     # Create a transaction
-    transaction = Transaction.objects.create(
-        user=request.user,
-        subtotal=round(subtotal, 2),
-        total=round(total, 2),
-        taxes=round(taxes, 2),
-    )
-
-# Create line items for each product in the cart
-    for product_id, quantity in cart.items():
-        product = Product.objects.get(id=product_id)
-# Calculate taxes for this line item
-        line_item_taxes = product.price * quantity * tax_rate  
-        LineItem.objects.create(
-            transaction=transaction,
-            product_id=product,
-            product_name=product.name,
-            price=product.price,
-            total_price=product.price * quantity,
-            quantity=quantity,
-# Add taxes for the line item
-            taxes=round(line_item_taxes, 2),  
+    with transaction.atomic():
+        new_transaction = Transaction.objects.create(
+            user=request.user,
+            status='pending',  # Default status
+            promotion_version_id=None  # Set this if applicable
         )
 
-# Clear the cart
+        # Create line items for each product in the cart
+        for product_id, quantity in cart.items():
+            product = Product.objects.get(id=product_id)
+            LineItem.objects.create(
+                transaction=new_transaction,
+                product=product,
+                product_name=product.name,
+                price=product.price,
+                quantity=quantity,
+                tax_rate=round(Decimal('0.10'), 2)
+            )
+
+        # Update transaction status to 'pending'
+        new_transaction.status = 'pending'
+        new_transaction.save()
+
+    # Clear the cart
     request.session['cart'] = {}
     messages.success(request, 'Purchase successful!')
 
-# Pass data to the template
-    context = {
-        'cart_items': cart_items,
+    return redirect('account')
+
+@login_required
+def purchase_summary(request, transaction_id):
+    transaction = get_object_or_404(Transaction, id=transaction_id, user=request.user)
+    line_items = LineItem.objects.filter(transaction=transaction)
+
+    subtotal = sum(item.price * item.quantity for item in line_items)
+    taxes = sum(item.price * item.quantity * item.tax_rate for item in line_items)
+    total = subtotal + taxes
+
+    return render(request, 'store/purchase_summary.html', {
+        'transaction': transaction,
+        'line_items': line_items,
         'subtotal': round(subtotal, 2),
         'taxes': round(taxes, 2),
         'total': round(total, 2),
-    }
-    return render(request, 'store/purchase.html', context)
-    
+    })
+
+
+
+
 def login_view(request):
     if request.method == 'POST':
         username = request.POST['username']
@@ -197,7 +194,22 @@ def login_view(request):
 @login_required
 def account_view(request):
     transactions = Transaction.objects.filter(user=request.user).order_by('-created_at')
-    return render(request, 'store/account.html', {'transactions': transactions})
+    transaction_summaries = []
+
+    for transaction in transactions:
+        line_items = LineItem.objects.filter(transaction=transaction)
+        subtotal = sum(item.price * item.quantity for item in line_items)
+        taxes = sum(item.price * item.quantity * item.tax_rate for item in line_items)
+        total = subtotal + taxes
+
+        transaction_summaries.append({
+            'transaction': transaction,
+            'subtotal': round(subtotal, 2),
+            'taxes': round(taxes, 2),
+            'total': round(total, 2),
+            'line_items': line_items
+        })
+    return render(request, 'store/account.html', {'transaction_summaries': transaction_summaries})
 
 @login_required
 def invoice_detail(request, transaction_id):

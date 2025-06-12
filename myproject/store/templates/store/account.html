@@ -5,32 +5,30 @@
 {% block content %}
 <h1>Account</h1>
 <h2>Transactions</h2>
-{% if transactions %}
-    <table>
-        <thead>
-            <tr>
-                <th>Invoice ID</th>
-                <th>Date</th>
-                <th>Subtotal</th>
-                <th>Taxes</th>
-                <th>Total</th>
-                <th>Details</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for transaction in transactions %}
-                <tr>
-                    <td>{{ transaction.id }}</td>
-                    <td>{{ transaction.created_at }}</td>
-                    <td>{{ transaction.subtotal }}</td>
-                    <td>{{ transaction.taxes }}</td>
-                    <td>{{ transaction.total }}</td>
-                    <td><a href="{% url 'invoice_detail' transaction.id %}">View Invoice</a></td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+
+{% if transaction_summaries %}
+    {% for summary in transaction_summaries %}
+        <div class="transaction-summary">
+            <h3>Transaction ID: {{ summary.transaction.transaction_id }}</h3>
+            <p>Status: {{ summary.transaction.status }}</p>
+            <p>Date: {{ summary.transaction.created_at }}</p>
+
+            <h4>Line Items:</h4>
+            <ul>
+                {% for item in summary.line_items %}
+                    <li>
+                        {{ item.product_name }} - Quantity: {{ item.quantity }} - Price: ${{ item.price }}
+                    </li>
+                {% endfor %}
+            </ul>
+
+            <p><strong>Subtotal:</strong> ${{ summary.subtotal }}</p>
+            <p><strong>Taxes:</strong> ${{ summary.taxes }}</p>
+            <p><strong>Total:</strong> ${{ summary.total }}</p>
+        </div>
+        <hr>
+    {% endfor %}
 {% else %}
-    <p>You have no transactions</p>
+    <p>No transactions found.</p>
 {% endif %}
 {% endblock %}
