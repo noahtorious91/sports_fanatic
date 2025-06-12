@@ -19,6 +19,7 @@ urlpatterns = [
     path('login/', views.login_view, name='login'),
     path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
     path('purchase/', views.purchase, name='purchase'),
+    #path('purchase/<int:transaction_id>/', views.purchase_detail, name='purchase_detail'),
     path('account/', views.account_view, name='account'),
     path('invoice/<int:transaction_id>/', views.invoice_detail, name='invoice_detail'),
     path('product/<int:product_id>/', views.product_detail, name='product_detail'),
