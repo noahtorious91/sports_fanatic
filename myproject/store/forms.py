@@ -1,5 +1,5 @@
 from django import forms
-from .models import Product
+from .models import Product, Shipment, Transaction, LineItem
 
 # Ensure the Product model has the fields: name, price, stock, description, and image.
 
@@ -58,3 +58,23 @@ class ProductForm(forms.ModelForm):
             'description': 'Description',
             'image': 'Product Image'
         }
+
+class ShipmentForm(forms.ModelForm):
+    class Meta:
+        model = Shipment
+        fields = ['shipping_provider', 'line_item', 'status']
+        widgets = {
+            'shipping_provider': forms.TextInput(attrs={'class': 'form-control'}),
+            'line_item': forms.Select(attrs={'class': 'form-control'}),
+            'status': forms.Select(attrs={'class': 'form-control'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Show all line items with custom labels
+        self.fields['line_item'].queryset = LineItem.objects.all()
+        self.fields['line_item'].label_from_instance = self.label_from_instance
+
+    @staticmethod
+    def label_from_instance(obj):
+        return f"LineItem #{obj.id} - Transaction #{obj.transaction.transaction_id} - {obj.product_name}"

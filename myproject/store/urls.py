@@ -27,4 +27,7 @@ urlpatterns = [
     path('catalog/', views.catalog_tool, name='catalog_tool'),
     path('catalog/add/', views.add_product, name='add_product'),
     path('catalog/edit/<int:product_id>/', views.edit_product, name='edit_product'),
+    path('shipments/', views.shipment_tool, name='shipment_tool'),
+    path('shipments/add/', views.add_shipment, name='add_shipment'),
+    path('shipments/edit/<int:shipment_id>/', views.edit_shipment, name='edit_shipment'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)  # Append the list correctly
