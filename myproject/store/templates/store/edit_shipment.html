@@ -1,0 +1,15 @@
+{% extends 'store/base.html' %}
+
+{% block title %}Edit Shipment{% endblock %}
+
+{% block content %}
+<div class="edit-shipment-container">
+    <h1>Edit Shipment #{{ shipment.shipment_id }}</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn">Update Shipment</button>
+    </form>
+    <a href="{% url 'shipment_tool' %}">Back to Shipment Tool</a>
+</div>
+{% endblock %}

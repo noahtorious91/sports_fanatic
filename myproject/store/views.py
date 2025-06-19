@@ -1,5 +1,4 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Product
 from django.contrib.auth.forms import UserCreationForm
 from django import forms
 from django.contrib.auth.models import User
@@ -7,8 +6,8 @@ from django.contrib.auth import login, authenticate
 from django.contrib import messages
 from decimal import Decimal
 from django.contrib.auth.decorators import login_required
-from .models import Transaction, LineItem, Product
-from .forms import ProductForm
+from .models import Transaction, LineItem, Product, Shipment
+from .forms import ProductForm, ShipmentForm
 from django.db import transaction
 import random
 
@@ -253,3 +252,35 @@ def edit_product(request, product_id):
     else:
         form = ProductForm(instance=product)
     return render(request, 'store/edit_product.html', {'form': form, 'product': product})
+
+@login_required
+def shipment_tool(request):
+    shipments = Shipment.objects.all().order_by('-created_at')
+    return render(request, 'store/shipment_tool.html', {'shipments': shipments})
+
+@login_required
+def add_shipment(request):
+    if request.method == 'POST':
+        form = ShipmentForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Shipment added successfully!')
+            return redirect('shipment_tool')
+    else:
+        form = ShipmentForm()  # Handle GET request by rendering an empty form
+    return render(request, 'store/add_shipment.html', {'form': form})
+    
+@login_required
+def edit_shipment(request, shipment_id):
+    shipment = get_object_or_404(Shipment, shipment_id=shipment_id)
+    if request.method == 'POST':
+        form = ShipmentForm(request.POST, instance=shipment)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Shipment updated successfully")
+            return redirect('shipment_tool')
+        else:
+            messages.error(request, "Please correct the errors below.")
+    else:
+        form = ShipmentForm(instance=shipment)
+    return render(request, 'store/edit_shipment.html', {'form': form, 'shipment': shipment})

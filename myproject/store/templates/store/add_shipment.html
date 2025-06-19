@@ -1,0 +1,15 @@
+{% extends 'store/base.html' %}
+
+{% block title %}Add Shipment{% endblock %}
+
+{% block content %}
+<div class="add-shipment-container">
+    <h1>Add New Shipment</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p}}
+        <button type="submit" class="btn">Create Shipment</button>
+    </form>
+    <a href="{% url 'shipment_tool' %}">Back to Shipment Tool</a>
+</div>
+{% endblock %}

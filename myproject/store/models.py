@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 # Create your models here.
 class Category(models.Model):
@@ -29,8 +30,8 @@ class Transaction(models.Model):
     ('failed', 'Failed')
     ], default='pending')
     promotion_version_id = models.CharField(max_length=100, blank=True, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(default=timezone.now)
     def __str__(self):
         return f"Transaction {self.transaction_id} by {self.user.username} - {self.status}"
     
@@ -41,7 +42,31 @@ class LineItem(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     tax_rate = models.DecimalField(max_digits=10, decimal_places=2)
     quantity = models.PositiveIntegerField()
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(default=timezone.now)
+    status = models.CharField(max_length=50, choices=[
+        ('pending', 'Pending'),
+        ('completed', 'Completed'),
+        ('cancelled', 'Cancelled'),
+        ('failed', 'Failed')
+    ], default='pending')   
 
     def __str__(self):
         return f"{self.product_name} (x{self.quantity})"
+    
+class Shipment(models.Model):
+    shipment_id = models.AutoField(primary_key=True)
+    shipping_provider = models.CharField(max_length=100)
+    line_item = models.ForeignKey(LineItem, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(default=timezone.now)
+    status = models.CharField(max_length=50, choices=[
+        ('pending', 'Pending'),
+        ('shipped', 'Shipped'),
+        ('delivered', 'Delivered'),
+        ('cancelled', 'Cancelled')
+    ], default='pending')
+
+    def __str__(self):
+        return f"Shipment {self.shipment_id} - {self.line_item.product_name} ({self.status})"
 
