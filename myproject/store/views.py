@@ -7,8 +7,9 @@ from django.contrib import messages
 from decimal import Decimal
 from django.contrib.auth.decorators import login_required
 from .models import Transaction, LineItem, Product, Shipment
-from .forms import ProductForm, ShipmentForm
+from .forms import ProductForm, ShipmentForm, ShipmentEditForm
 from django.db import transaction
+from django.http import JsonResponse
 import random
 
 # Query all products from the database - used on the product list page
@@ -175,8 +176,24 @@ def purchase_summary(request, transaction_id):
         'total': round(total, 2),
     })
 
-
-
+def get_transaction_line_items(request, transaction_id):
+    """API endpoint to get line items for a specific transaction"""
+    try:
+        line_items = LineItem.objects.filter(transaction__transaction_id=transaction_id)
+        
+        data = []
+        for item in line_items:
+            data.append({
+                'id': item.id,
+                'product_name': item.product_name,
+                'quantity': item.quantity,
+                'price': str(item.price),
+                'transaction_id': item.transaction.transaction_id
+            })
+        
+        return JsonResponse({'line_items': data})
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=400)
 
 def login_view(request):
     if request.method == 'POST':
@@ -263,18 +280,25 @@ def add_shipment(request):
     if request.method == 'POST':
         form = ShipmentForm(request.POST)
         if form.is_valid():
-            form.save()
-            messages.success(request, 'Shipment added successfully!')
+            shipment = form.save()
+            # Handle line items if they exist
+            line_items = request.POST.getlist('line_items')
+            if line_items:
+                shipment.line_items.set(LineItem.objects.filter(id__in=line_items))
+            messages.success(request, f'Shipment {shipment.shipment_id} created successfully!')
             return redirect('shipment_tool')
+        else:
+            messages.error(request, 'Please correct the errors below.')
     else:
-        form = ShipmentForm()  # Handle GET request by rendering an empty form
+        form = ShipmentForm()
+    
     return render(request, 'store/add_shipment.html', {'form': form})
     
 @login_required
 def edit_shipment(request, shipment_id):
     shipment = get_object_or_404(Shipment, shipment_id=shipment_id)
     if request.method == 'POST':
-        form = ShipmentForm(request.POST, instance=shipment)
+        form = ShipmentEditForm(request.POST, instance=shipment)
         if form.is_valid():
             form.save()
             messages.success(request, "Shipment updated successfully")
@@ -282,5 +306,5 @@ def edit_shipment(request, shipment_id):
         else:
             messages.error(request, "Please correct the errors below.")
     else:
-        form = ShipmentForm(instance=shipment)
+        form = ShipmentEditForm(instance=shipment)
     return render(request, 'store/edit_shipment.html', {'form': form, 'shipment': shipment})

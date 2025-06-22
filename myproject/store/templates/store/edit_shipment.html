@@ -2,14 +2,55 @@
 
 {% block title %}Edit Shipment{% endblock %}
 
+{% load static %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'store/edit_shipment.css' %}">
+{% endblock %}
+
 {% block content %}
 <div class="edit-shipment-container">
     <h1>Edit Shipment #{{ shipment.shipment_id }}</h1>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit" class="btn">Update Shipment</button>
-    </form>
+    
+    <div class="shipment-details">
+        <h3>Shipment Details</h3>
+        <p><strong>Shipping Provider:</strong> {{ shipment.shipping_provider }}</p>
+        <p><strong>Current Status:</strong> {{ shipment.get_status_display }}</p>
+        <p><strong>Created:</strong> {{ shipment.created_at|date:"M d, Y H:i" }}</p>
+        <p><strong>Last Updated:</strong> {{ shipment.updated_at|date:"M d, Y H:i" }}</p>
+        
+        <h4>Line Items in this Shipment:</h4>
+        {% if shipment.line_items.all %}
+            <div class="line-items-list">
+                {% for line_item in shipment.line_items.all %}
+                    <div class="line-item">
+                        <p><strong>LineItem #{{ line_item.id }}</strong></p>
+                        <p>Product: {{ line_item.product_name }}</p>
+                        <p>Quantity: {{ line_item.quantity }}</p>
+                        <p>Price: ${{ line_item.price }}</p>
+                        <p>Transaction: #{{ line_item.transaction.transaction_id }}</p>
+                        <hr>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p class="no-items">No line items found for this shipment.</p>
+            <p><em>Debug info: Shipment ID = {{ shipment.shipment_id }}, Line items count = {{ shipment.line_items.count }}</em></p>
+        {% endif %}
+    </div>
+    
+    <div class="status-form">
+        <h3>Update Status</h3>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="{{ form.status.id_for_label }}">{{ form.status.label }}</label>
+                {{ form.status }}
+            </div>
+            <button type="submit" class="btn">Update Shipment Status</button>
+        </form>
+    </div>
+    
     <a href="{% url 'shipment_tool' %}">Back to Shipment Tool</a>
 </div>
 {% endblock %}

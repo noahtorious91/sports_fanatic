@@ -30,4 +30,5 @@ urlpatterns = [
     path('shipments/', views.shipment_tool, name='shipment_tool'),
     path('shipments/add/', views.add_shipment, name='add_shipment'),
     path('shipments/edit/<int:shipment_id>/', views.edit_shipment, name='edit_shipment'),
+    path('api/transaction-line-items/<int:transaction_id>/', views.get_transaction_line_items, name='get_transaction_line_items'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)  # Append the list correctly

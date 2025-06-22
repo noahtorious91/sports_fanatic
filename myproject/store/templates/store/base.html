@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}MyShop{% endblock %}</title>
+    {% block scripts %}{% endblock %}
     {% block styles %}{% endblock %}
     <link rel="stylesheet" href="{% static 'store/base.css' %}">
 </head>
@@ -24,6 +25,7 @@
                             <li><a href="{% url 'internal_tools' %}">Internal Tools</a></li>
                             <!-- Add more dropdown links here -->
                              <li><a href="{% url 'catalog_tool' %}">Catalog Tool</a></li>
+                             <li><a href="{% url 'shipment_tool' %}">Shipment Tool</a></li>
                         </ul>
                     </li>
                     <form action="{% url 'logout' %}" method="post" style="display:inline">
