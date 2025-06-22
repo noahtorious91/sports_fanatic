@@ -57,7 +57,7 @@ class LineItem(models.Model):
 class Shipment(models.Model):
     shipment_id = models.AutoField(primary_key=True)
     shipping_provider = models.CharField(max_length=100)
-    line_item = models.ForeignKey(LineItem, on_delete=models.CASCADE)
+    line_items = models.ManyToManyField(LineItem, related_name='shipments')  # Changed to ManyToMany
     created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(default=timezone.now)
     status = models.CharField(max_length=50, choices=[
@@ -68,5 +68,5 @@ class Shipment(models.Model):
     ], default='pending')
 
     def __str__(self):
-        return f"Shipment {self.shipment_id} - {self.line_item.product_name} ({self.status})"
+        return f"Shipment {self.shipment_id} - {self.shipping_provider} ({self.status})"
 
