@@ -1,37 +1,56 @@
 {% extends 'store/base.html' %}
+{% load static %}
 
 {% block title %}Shipment Tool{% endblock %}
 
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'store/shipment_tool.css' %}">
+{% endblock %}
+
 {% block content %}
 <div class="shipment-tool-container">
-    <h1>Shipment Tool</h1>
-    <a href="{% url 'add_shipment' %}" class="btn">Create New Shipment</a>
+    <h1>Shipment Management Tool</h1>
+    <a href="{% url 'add_shipment' %}" class="create-shipment-btn">Create New Shipment</a>
     
-    <table>
-        <thead>
-            <tr>
-                <th>Shipment ID</th>
-                <th>Shipping Provider</th>
-                <th>Line Items Count</th>
-                <th>Status</th>
-                <th>Created</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for shipment in shipments %}
-            <tr>
-                <td>{{ shipment.shipment_id }}</td>
-                <td>{{ shipment.shipping_provider }}</td>
-                <td>{{ shipment.line_items.count }} items</td>
-                <td>{{ shipment.status }}</td>
-                <td>{{ shipment.created_at }}</td>
-                <td>
-                    <a href="{% url 'edit_shipment' shipment.shipment_id %}">Edit</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    {% if shipments %}
+        <div class="shipments-table-wrapper">
+            <table class="shipments-table">
+                <thead>
+                    <tr>
+                        <th>Shipment ID</th>
+                        <th>Shipping Provider</th>
+                        <th>Line Items</th>
+                        <th>Status</th>
+                        <th>Created</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for shipment in shipments %}
+                    <tr>
+                        <td>#{{ shipment.shipment_id }}</td>
+                        <td>{{ shipment.shipping_provider }}</td>
+                        <td><span class="line-items-count">{{ shipment.line_items.count }} items</span></td>
+                        <td>
+                            <span class="status-badge status-{{ shipment.status }}">
+                                {{ shipment.get_status_display }}
+                            </span>
+                        </td>
+                        <td class="date-cell">{{ shipment.created_at|date:"M d, Y H:i" }}</td>
+                        <td>
+                            <a href="{% url 'edit_shipment' shipment.shipment_id %}" class="edit-link">Edit</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <div class="empty-state-icon">📦</div>
+            <h3>No Shipments Found</h3>
+            <p>You haven't created any shipments yet. Click the button above to create your first shipment.</p>
+        </div>
+    {% endif %}
 </div>
 {% endblock %}
