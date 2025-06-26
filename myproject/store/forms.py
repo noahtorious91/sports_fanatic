@@ -6,7 +6,7 @@ from .models import Product, Shipment, Transaction, LineItem
 class ProductForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = ['name', 'price', 'stock', 'description', 'image']
+        fields = ['name', 'price', 'stock', 'category', 'description', 'image']
         widgets = {
             'name' : forms.TextInput(attrs={
                 'class': 'form-control',
@@ -19,6 +19,10 @@ class ProductForm(forms.ModelForm):
             'stock': forms.NumberInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Enter product stock'
+            }),
+            'category': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter product category (optional)'
             }),
             'description': forms.Textarea(attrs={
                 'class': 'form-control',
@@ -56,7 +60,8 @@ class ProductForm(forms.ModelForm):
             'price': 'Price',
             'stock': 'Stock Quantity',
             'description': 'Description',
-            'image': 'Product Image'
+            'image': 'Product Image',
+            'category': 'Category'
         }
 
 class ShipmentForm(forms.ModelForm):

@@ -1,37 +1,78 @@
 {% extends 'store/base.html' %}
 {% load static %}
 
-{% block styles %}
-<link rel="stylesheet" href="{% static 'store/catalog_tool.css' %}">
-{% endblock %}
+{% block title %}Catalog Management Tool{% endblock %}
 
-{% block title %}Catalog Tool{% endblock %}
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'store/catalog_tool.css' %}">
+{% endblock %}
 
 {% block content %}
 <div class="catalog-tool-container">
-    <h1>Catalog Tool</h1>
-    <a href="{% url 'add_product' %}" class="btn">Add New Product</a>
-    <table>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Price</th>
-                <th>Stock</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for product in products %}
-            <tr>
-                <td>{{ product.name }}</td>
-                <td>${{ product.price }}</td>
-                <td>{{ product.stock }}</td>
-                <td>
-                    <a href="{% url 'edit_product' product.id %}">Edit</a>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <h1>Product Catalog Management</h1>
+    <a href="{% url 'add_product' %}" class="add-product-btn">Add New Product</a>
+    
+    {% if products %}
+        <div class="products-table-wrapper">
+            <table class="products-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Stock</th>
+                        <th>Created</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in products %}
+                    <tr>
+                        <td>#{{ product.id }}</td>
+                        <td>
+                            {% if product.image %}
+                                <img src="{{ product.image.url }}" alt="{{ product.name }}" class="product-image">
+                            {% else %}
+                                <div class="product-image" style="background-color: #f8f9fa; display: flex; align-items: center; justify-content: center; color: #6c757d;">
+                                    📦
+                                </div>
+                            {% endif %}
+                        </td>
+                        <td>{{ product.name }}</td>
+                        <td>
+                            {% if product.category %}
+                                <span class="category-tag">{{ product.category }}</span>
+                            {% else %}
+                                <span class="category-tag" style="background: #6c757d;">Uncategorized</span>
+                            {% endif %}
+                        </td>
+                        <td class="price-cell">{{ product.price }}</td>
+                        <td>
+                            {% if product.stock > 50 %}
+                                <span class="stock-badge stock-high">{{ product.stock }} in stock</span>
+                            {% elif product.stock > 10 %}
+                                <span class="stock-badge stock-medium">{{ product.stock }} in stock</span>
+                            {% else %}
+                                <span class="stock-badge stock-low">{{ product.stock }} in stock</span>
+                            {% endif %}
+                        </td>
+                        <td class="date-cell">{{ product.created_at|date:"M d, Y" }}</td>
+                        <td>
+                            <a href="{% url 'edit_product' product.id %}" class="edit-link">Edit</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <div class="empty-state-icon">📦</div>
+            <h3>No Products Found</h3>
+            <p>You haven't added any products yet. Click the button above to add your first product.</p>
+        </div>
+    {% endif %}
 </div>
 {% endblock %}

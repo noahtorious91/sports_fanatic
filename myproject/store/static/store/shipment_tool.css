@@ -1,0 +1,254 @@
+.shipment-tool-container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+.shipment-tool-container h1 {
+    color: #2c3e50;
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 3px solid #3498db;
+    font-size: 2.5em;
+    text-align: center;
+    position: relative;
+}
+
+.shipment-tool-container h1:before {
+    content: "🚚";
+    position: absolute;
+    left: -50px;
+    top: 0;
+    font-size: 0.8em;
+}
+
+.create-shipment-btn {
+    display: inline-block;
+    background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+    color: white;
+    padding: 15px 30px;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1.1em;
+    margin-bottom: 30px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(52, 152, 219, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.create-shipment-btn:hover {
+    background: linear-gradient(135deg, #2980b9 0%, #1f4e79 100%);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(52, 152, 219, 0.4);
+}
+
+.create-shipment-btn:before {
+    content: "➕ ";
+    margin-right: 8px;
+}
+
+.shipments-table-wrapper {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    border: 1px solid #e9ecef;
+}
+
+.shipments-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+    font-size: 1em;
+}
+
+.shipments-table thead {
+    background: linear-gradient(135deg, #34495e 0%, #2c3e50 100%);
+    color: white;
+}
+
+.shipments-table thead th {
+    padding: 18px 15px;
+    text-align: left;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.9em;
+    border-bottom: 3px solid #3498db;
+    position: relative;
+}
+
+.shipments-table tbody tr {
+    transition: all 0.3s ease;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.shipments-table tbody tr:nth-child(even) {
+    background-color: #f8f9fa;
+}
+
+.shipments-table tbody tr:hover{
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    transform: scale(1.01);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1)
+}
+
+.shipments-table tbody td {
+    padding: 15px;
+    vertical-align: middle;
+    font-size: 0.95em;
+}
+
+.shipments-table tbody td:first-child {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-pending {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+
+.status-shipped {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #74c0fc;
+}
+
+.status-delivered {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #51cf66;
+}
+
+.status-cancelled {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #ff6b6b;
+}
+
+.edit-link {
+    display: line-block;
+    color: #3498db;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 8px 16px;
+    border: 2px solid #3498db;
+    border-radius: 6px;
+    transition: all 0.3 ease;
+    background-color: transparent;
+    font-size: 0.9em;
+}
+
+.edit-link:hover {
+    background-color: #3498db;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+}
+
+.line-items-count {
+    background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
+    color: #2e7d32;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.85em;
+    font-weight: 600;
+    border: 1px solid #a5d6a7;
+}
+
+.date-cell {
+    color: #6c757d;
+    font-size: 0.9em;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #6c757d;
+}
+
+.empty-state-icon {
+    font-size: 4em;
+    margin-bottom: 20px;
+    opacity: 0,5;
+
+}
+
+.empty-state h3 {
+    margin-bottom: 30px;
+    color: #495057
+}
+
+.empty-state p {
+    margin-bottom: 30px;
+    font-size: 1.1em
+}
+
+@media (max-width: 992px) {
+    .shipments-table-wrapper {
+        overflow-x: auto;
+    }
+
+    .shipments-table {
+        min-width: 800px;
+    }
+}
+
+@media (max-width: 768px) {
+    .shipment-tool-container {
+        margin: 10px;
+        padding: 15px;
+    }
+
+    .shipment-tool-container h1 {
+        font-size: 2em;
+        text-align: left;
+    }
+
+    .shipment-tool-container h1:before {
+        display: none;
+    }
+
+    .create-shipment-btn {
+        width: 100%;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .shipments-table thead th,
+    .shipments-table tbody td {
+        padding: 10px 8px;
+        font-size: 0.85em;
+    }
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.shipments-table tbody tr {
+    animation: fadeInScale 0.4s ease forwards;
+}
+
