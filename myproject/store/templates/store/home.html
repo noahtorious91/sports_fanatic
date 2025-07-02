@@ -8,38 +8,147 @@
 {% block title %}Products - MyShop{% endblock %}
 
 {% block content %}
-    <h1>Welcome to MyShop 🛒</h1>
-    <div class="products">
-        {% for product in random_products %}
-            <div class="product">
-                {% if product.image %}
-                <img src="{{ product.image.url }}" alt="{{ product.name }}">
-                {% else %}
-                <img src="{% static 'store/default-product.png' %}" alt="Default Product">
-                {% endif %}
-                <h3>{{ product.name }}</h3>
-                <a href = "{% url 'product_detail' product.id %}">View Details</a>
-                <p>Price: ${{ product.price }}</p>
-                {% if product.stock %}
-                    <p>In Stock: {{ product.stock }}</p>
-                    <!-- Add to Cart button if stock is available -->
-                    <form action="{% url 'add_to_cart' product.id %}" method=post>
+
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="hero-content">
+        <h1>GEAR UP FOR GREATNESS</h1>
+        <p>Discover premium sports equipment, apparel, and accessories. Your journey to athletic excellence starts here.</p>
+        
+        <div class="hero-stats">
+            <div class="stat-item">
+                <div class="stat-number">{{ total_products }}+</div>
+                <div class="stat-label">Products</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">24/7</div>
+                <div class="stat-label">Support</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">FREE</div>
+                <div class="stat-label">Shipping</div>
+            </div>
+        </div>
+
+        <div class="cta-buttons">
+            <a href="{% url 'product_list' %}" class="cta-button cta-primary">Shop Now</a>
+            <a href="#featured" class="cta-button cta-secondary">Explore</a>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section">
+    <div class="container">
+        <h2 class="section-title">Why Choose Sports Fanatic?</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🚚</div>
+                <h3>Free Shipping</h3>
+                <p>Free shipping on orders over $75. Get your gear delivered fast and free!</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⭐</div>
+                <h3>Premium Quality</h3>
+                <p>Only the best brands and highest quality sports equipment for athletes.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔄</div>
+                <h3>Easy Returns</h3>
+                <p>30-day hassle-free returns. Not satisfied? We'll make it right.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🏆</div>
+                <h3>Pro Support</h3>
+                <p>Get advice from sports experts who understand your performance needs.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Products Section -->
+<section class="products-section" id="featured">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Featured Products</h2>
+            <p class="section-subtitle">Handpicked items that deliver peak performance and style.</p>
+        </div>
+        
+        <div class="products-grid">
+            {% for product in featured_products %}
+            <div class="product-card">
+                <div class="product-image">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                    {% else %}
+                        🏃‍♂️
+                    {% endif %}
+                </div>
+                <div class="product-info">
+                    <div class="product-name">{{ product.name }}</div>
+                    <div class="product-price">${{ product.price }}</div>
+                    <form method="post" action="{% url 'add_to_cart' product.id %}">
                         {% csrf_token %}
                         <button type="submit" class="add-to-cart-btn">Add to Cart</button>
                     </form>
-                {% else %}
-                    <p style="color: red;">Out of Stock</p>
-                {% endif %}
-                {% if product.description %}
-                    <p>Description: {{ product.description }}</p>
-                {% endif %}
+                </div>
             </div>
-        {% endfor %}
-    </div>
+            {% empty %}
+            <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px; color: #7f8c8d;">
+                <h3>No products available yet</h3>
+                <p>Check back soon for amazing sports gear!</p>
+            </div>
+            {% endfor %}
+        </div>
 
-    <script>
-        function addToCart(productId) {
-            alert(`Product ${productId} has been added to your cart!`);
-        }
-    </script>
+        <div style="text-align: center;">
+            <a href="{% url 'product_list' %}" class="view-all-btn">View All Products</a>
+        </div>
+    </div>
+</section>
+
+<!-- Best Sellers Section -->
+<section class="best-sellers-section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Best Sellers</h2>
+            <p class="section-subtitle">The most popular items among our athletic community.</p>
+        </div>
+        
+        <div class="products-grid">
+            {% for product in best_sellers %}
+            <div class="product-card">
+                <div class="product-image">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                    {% else %}
+                        🏆
+                    {% endif %}
+                </div>
+                <div class="product-info">
+                    <div class="product-name">{{ product.name }}</div>
+                    <div class="product-price">${{ product.price }}</div>
+                    <form method="post" action="{% url 'add_to_cart' product.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="add-to-cart-btn">Add to Cart</button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Newsletter Section -->
+<section class="newsletter-section">
+    <div class="container">
+        <h2 style="font-size: 2.5rem; margin-bottom: 20px;">Stay in the Game</h2>
+        <p style="font-size: 1.2rem; margin-bottom: 0;">Get exclusive deals, new product alerts, and training tips delivered to your inbox.</p>
+        
+        <form class="newsletter-form">
+            <input type="email" class="newsletter-input" placeholder="Enter your email address" required>
+            <button type="submit" class="newsletter-btn">Subscribe</button>
+        </form>
+    </div>
+</section>
 {% endblock %}
