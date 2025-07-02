@@ -1,34 +1,96 @@
 {% extends 'store/base.html' %}
+{% load static %}
 
-{% block title %}Account - Transactions{% endblock %}
+{% block title %}My Account{% endblock %}
+
+{% block styles %}
+    <link rel="stylesheet" href="{% static 'store/account.css' %}">
+{% endblock %}
 
 {% block content %}
-<h1>Account</h1>
-<h2>Transactions</h2>
-
-{% if transaction_summaries %}
-    {% for summary in transaction_summaries %}
-        <div class="transaction-summary">
-            <h3>Transaction ID: {{ summary.transaction.transaction_id }}</h3>
-            <p>Status: {{ summary.transaction.status }}</p>
-            <p>Date: {{ summary.transaction.created_at }}</p>
-
-            <h4>Line Items:</h4>
-            <ul>
-                {% for item in summary.line_items %}
-                    <li>
-                        {{ item.product_name }} - Quantity: {{ item.quantity }} - Price: ${{ item.price }}
-                    </li>
-                {% endfor %}
-            </ul>
-
-            <p><strong>Subtotal:</strong> ${{ summary.subtotal }}</p>
-            <p><strong>Taxes:</strong> ${{ summary.taxes }}</p>
-            <p><strong>Total:</strong> ${{ summary.total }}</p>
+<div class="account-container">
+    <h1>My Account</h1>
+    
+    <!-- Account Overview Cards -->
+    <div class="account-overview">
+        <div class="account-card profile-card">
+            <h3>Profile Information</h3>
+            <p><strong>Username:</strong> {{ user.username }}</p>
+            <p><strong>Email:</strong> {{ user.email }}</p>
+            <p><strong>Member Since:</strong> {{ user.date_joined|date:"M d, Y" }}</p>
         </div>
-        <hr>
-    {% endfor %}
-{% else %}
-    <p>No transactions found.</p>
-{% endif %}
+        
+        <div class="account-card orders-card">
+            <h3>Order Summary</h3>
+            <p><strong>Total Orders:</strong> <span class="highlight">{{ transactions.count }}</span></p>
+            <p><strong>Completed:</strong> {{ completed_count }}</p>
+            <p><strong>Pending:</strong> {{ pending_count }}</p>
+        </div>
+        
+        <div class="account-card stats-card">
+            <h3>Account Stats</h3>
+            <p><strong>Total Spent:</strong> <span class="highlight">${{ total_spent }}</span></p>
+            <p><strong>Last Order:</strong> {{ last_order_date|date:"M d, Y"|default:"Never" }}</p>
+        </div>
+    </div>
+    
+    <!-- Transaction History -->
+    <div class="transaction-history">
+        <h2>Transaction History</h2>
+        
+        {% if transaction_summaries %}
+            <table class="transactions-table">
+                <thead>
+                    <tr>
+                        <th>Transaction ID</th>
+                        <th>Date</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Items</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for summary in transaction_summaries %}
+                    <tr>
+                        <td class="transaction-id">#{{ summary.transaction.transaction_id }}</td>
+                        <td class="date-cell">{{ summary.transaction.created_at|date:"M d, Y H:i" }}</td>
+                        <td class="transaction-amount">{{ summary.total }}</td>
+                        <td>
+                            <span class="status-badge status-{{ summary.transaction.status }}">
+                                {{ summary.transaction.get_status_display }}
+                            </span>
+                        </td>
+                        <td>{{ summary.line_items.count }} items</td>
+                        <td>
+                            {% if summary.transaction.transaction_id %}
+                                <a href="{% url 'invoice_detail' summary.transaction.transaction_id %}" class="view-invoice-link">
+                                    View Details
+                                </a>
+                            {% else %}
+                                <span class="view-invoice-link" style="opacity: 0.5; cursor: not-allowed;">
+                                    No Details
+                                </span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <div class="empty-transactions">
+                <div class="empty-transactions-icon">🛒</div>
+                <h3>No Orders Yet</h3>
+                <p>You haven't made any purchases yet. Start shopping to see your order history here!</p>
+                <a href="{% url 'product_list' %}" class="shop-now-btn">Start Shopping</a>
+            </div>
+        {% endif %}
+    </div>
+    
+    <!-- Account Actions -->
+    <div class="account-actions">
+        <a href="{% url 'product_list' %}" class="account-btn">Continue Shopping</a>
+        <a href="{% url 'logout' %}" class="account-btn logout">Logout</a>
+    </div>
+</div>
 {% endblock %}

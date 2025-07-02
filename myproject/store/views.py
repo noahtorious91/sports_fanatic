@@ -19,10 +19,25 @@ def product_list(request):
 
 # Query a random subset of products via the database - used on the home page
 def home(request):
-    # Fetch all products and select a random subset
-    products = list(Product.objects.all())
-    random_products = random.sample(products, min(len(products), 5))  # Show up to 5 random products
-    return render(request, 'store/home.html', {'random_products': random_products})
+ # Get all products
+    all_products = Product.objects.all()
+    
+    # Featured products - first 6 products
+    featured_products = all_products[:6]
+    
+    # Best sellers - last 4 products (newest)
+    best_sellers = all_products.order_by('-id')[:3]
+    
+    # New arrivals - same as best sellers for now
+    new_arrivals = all_products.order_by('-id')[:3]
+    
+    context = {
+        'featured_products': featured_products,
+        'best_sellers': best_sellers,
+        'new_arrivals': new_arrivals,
+        'total_products': all_products.count(),
+    }
+    return render(request, 'store/home.html', context)
 
 # Gets the cart from the session and Gets the products in the cart
 def cart(request):
@@ -212,11 +227,22 @@ def account_view(request):
     transactions = Transaction.objects.filter(user=request.user).order_by('-created_at')
     transaction_summaries = []
 
+    # Calculate statistics
+    completed_count = transactions.filter(status='completed').count()
+    pending_count = transactions.filter(status='pending').count()
+    
+    # Calculate total spent
+    total_spent = 0
+    
     for transaction in transactions:
         line_items = LineItem.objects.filter(transaction=transaction)
         subtotal = sum(item.price * item.quantity for item in line_items)
         taxes = sum(item.price * item.quantity * item.tax_rate for item in line_items)
         total = subtotal + taxes
+        
+        # Add to total spent if completed
+        if transaction.status != 'cancelled':
+            total_spent += total
 
         transaction_summaries.append({
             'transaction': transaction,
@@ -225,13 +251,56 @@ def account_view(request):
             'total': round(total, 2),
             'line_items': line_items
         })
-    return render(request, 'store/account.html', {'transaction_summaries': transaction_summaries})
+    
+    # Get last order date
+    last_order = transactions.first()
+    last_order_date = last_order.created_at if last_order else None
+    
+    context = {
+        'transactions': transactions,  # Add this for the template
+        'transaction_summaries': transaction_summaries,  # Keep this for detailed data
+        'completed_count': completed_count,
+        'pending_count': pending_count,
+        'total_spent': round(total_spent, 2),
+        'last_order_date': last_order_date,
+    }
+    
+    return render(request, 'store/account.html', context)
 
 @login_required
 def invoice_detail(request, transaction_id):
-    transaction = get_object_or_404(Transaction, id=transaction_id, user=request.user)
+    transaction = get_object_or_404(Transaction, transaction_id=transaction_id, user=request.user)
     line_items = LineItem.objects.filter(transaction=transaction)
-    return render(request, 'store/invoice.html', {'transaction': transaction, 'line_items': line_items})
+    
+    # Calculate totals and prepare line items with calculated values
+    subtotal = 0
+    taxes = 0
+    line_items_with_totals = []
+    
+    for item in line_items:
+        line_total = item.price * item.quantity
+        line_tax = line_total * item.tax_rate
+        subtotal += line_total
+        taxes += line_tax
+        
+        line_items_with_totals.append({
+            'item': item,
+            'line_total': round(line_total, 2),
+            'line_tax': round(line_tax, 2),
+        })
+    
+    total = subtotal + taxes
+    
+    context = {
+        'transaction': transaction,
+        'line_items': line_items,
+        'line_items_with_totals': line_items_with_totals,
+        'subtotal': round(subtotal, 2),
+        'taxes': round(taxes, 2),
+        'total': round(total, 2),
+    }
+    
+    return render(request, 'store/invoice.html', context)
 
 @login_required
 def internal_tools(request):
