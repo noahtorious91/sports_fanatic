@@ -77,21 +77,23 @@
         <div class="products-grid">
             {% for product in featured_products %}
             <div class="product-card">
-                <div class="product-image">
-                    {% if product.image %}
-                        <img src="{{ product.image.url }}" alt="{{ product.name }}">
-                    {% else %}
-                        🏃‍♂️
-                    {% endif %}
-                </div>
-                <div class="product-info">
-                    <div class="product-name">{{ product.name }}</div>
-                    <div class="product-price">${{ product.price }}</div>
-                    <form method="post" action="{% url 'add_to_cart' product.id %}">
-                        {% csrf_token %}
-                        <button type="submit" class="add-to-cart-btn">Add to Cart</button>
-                    </form>
-                </div>
+                <a href="{% url 'product_detail' product.id %}" style="text-decoration: none; color: inherit;">
+                    <div class="product-image">
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                        {% else %}
+                            🏃‍♂️
+                        {% endif %}
+                    </div>
+                    <div class="product-info">
+                        <div class="product-name">{{ product.name }}</div>
+                        <div class="product-price">${{ product.price }}</div>
+                    </div>
+                </a>
+                <form method="post" action="{% url 'add_to_cart' product.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="add-to-cart-btn">Add to Cart</button>
+                </form>
             </div>
             {% empty %}
             <div style="grid-column: 1/-1; text-align: center; padding: 60px 20px; color: #7f8c8d;">
@@ -118,21 +120,23 @@
         <div class="products-grid">
             {% for product in best_sellers %}
             <div class="product-card">
-                <div class="product-image">
-                    {% if product.image %}
-                        <img src="{{ product.image.url }}" alt="{{ product.name }}">
-                    {% else %}
-                        🏆
-                    {% endif %}
-                </div>
-                <div class="product-info">
-                    <div class="product-name">{{ product.name }}</div>
-                    <div class="product-price">${{ product.price }}</div>
-                    <form method="post" action="{% url 'add_to_cart' product.id %}">
-                        {% csrf_token %}
-                        <button type="submit" class="add-to-cart-btn">Add to Cart</button>
-                    </form>
-                </div>
+                <a href="{% url 'product_detail' product.id %}" style="text-decoration: none; color: inherit;">
+                    <div class="product-image">
+                        {% if product.image %}
+                            <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                        {% else %}
+                            🏆
+                        {% endif %}
+                    </div>
+                    <div class="product-info">
+                        <div class="product-name">{{ product.name }}</div>
+                        <div class="product-price">${{ product.price }}</div>
+                    </div>
+                </a>
+                <form method="post" action="{% url 'add_to_cart' product.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="add-to-cart-btn">Add to Cart</button>
+                </form>
             </div>
             {% endfor %}
         </div>
